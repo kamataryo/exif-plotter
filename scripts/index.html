@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>EXIF Plotter</title>
+	<style>
+		html, body, #map {
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			margin: 0;
+		}
+	</style>
+</head>
+<body>
+	<div id="map" data-hash="on" data-cluster="off"></div>
+	<script src="https://cdn.geolonia.com/v1/embed?geolonia-api-key=YOUR-API-KEY"></script>
+	<script>
+		const map = new window.geolonia.Map('#map')
+    map.on('load', () => {
+      map.addSource('exif-gps-positions', {
+        type: 'vector',
+        tiles: [window.location.origin + '/tiles/{z}/{x}/{y}.mvt'],
+        maxzoom: 4,
+      })
+      map.addLayer({
+        id: 'points',
+        minzoom: 0,
+        maxzoom: 22,
+        type: 'symbol',
+        source: 'exif-gps-positions',
+        'source-layer': 'data',
+        filter: ['==', '$type', 'Point'],
+        layout: {
+          'icon-image': 'marker',
+          'icon-size': 1.5,
+        }
+      })
+    })
+	</script>
+</body>
+</html>
